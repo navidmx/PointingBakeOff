@@ -223,19 +223,19 @@ void keyPressed()
 
 void verify(int upper, int lower, int x) {
   if ((mouseY >= upper) && (mouseY <= lower)) {
-    if ((x == margin) && (key == '1')) {
+    if ((x == margin) && ((key == '1') || (key == 'a'))) {
       System.out.println("HIT! " + trialNum + " " + (millis() - startTime)); // success
       hits++;
     }
-    else if ((x == margin + buttonSize + padding) && (key == '2')) {
+    else if ((x == margin + buttonSize + padding) && ((key == '2') || (key == 's'))) {
       System.out.println("HIT! " + trialNum + " " + (millis() - startTime)); // success
       hits++;
     }
-    else if ((x == margin + (buttonSize + padding)*2) && (key == '3')) {
+    else if ((x == margin + (buttonSize + padding)*2) && ((key == '3') || (key == 'd'))) {
       System.out.println("HIT! " + trialNum + " " + (millis() - startTime)); // success
       hits++;
     }
-    else if ((x == margin + (buttonSize + padding)*3) && (key == '4')) {
+    else if ((x == margin + (buttonSize + padding)*3) && ((key == '4') || (key == 'f'))) {
       System.out.println("HIT! " + trialNum + " " + (millis() - startTime)); // success
       hits++;
     }
