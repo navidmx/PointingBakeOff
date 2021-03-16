@@ -17,6 +17,9 @@ int finishTime = 0; //records the time of the final click
 int hits = 0; //number of successful clicks
 int misses = 0; //number of missed clicks
 Robot robot; //initalized in setup 
+int defaultCursorColor = 255;
+int targetButtonCursorColor = #39ad39;
+int otherButtonCursorColor = #ff0000;
 
 int numRepeats = 1; //sets the number of times each button repeats in the test
 
@@ -78,8 +81,24 @@ void draw()
   for (int i = 0; i < 16; i++)// for all button
     drawButton(i); //draw button
 
-  fill(255, 0, 0, 200); // set fill color to translucent red
+  int currentCursorColor = computeCursorColor(); 
+  fill(currentCursorColor, 225); // set fill color based on where mouse is 
   ellipse(mouseX, mouseY, 20, 20); //draw user cursor as a circle with a diameter of 20
+}
+
+int computeCursorColor() 
+{
+  //check to see if mouse cursor is within target button or another button 
+  for (int i = 0; i < 16; i++) 
+  {
+    Rectangle bounds = getButtonLocation(i);
+    if ((mouseX > bounds.x && mouseX < bounds.x + bounds.width) && (mouseY > bounds.y && mouseY < bounds.y + bounds.height)) // test to see if hit was within bounds
+    {
+      return (i == trials.get(trialNum)) ? targetButtonCursorColor : otherButtonCursorColor;
+    }     
+  }
+
+  return defaultCursorColor;
 }
 
 void mousePressed() // test to see if hit was in target!
