@@ -17,7 +17,7 @@ int finishTime = 0; //records the time of the final click
 int hits = 0; //number of successful clicks
 int misses = 0; //number of missed clicks
 Robot robot; //initalized in setup 
-
+int epsilon = 20; 
 int numRepeats = 1; //sets the number of times each button repeats in the test
 
 void setup()
@@ -142,6 +142,17 @@ void mouseMoved()
 {
    //can do stuff everytime the mouse is moved (i.e., not clicked)
    //https://processing.org/reference/mouseMoved_.html
+   for (int i = 0; i < 16; i++) 
+   {
+     Rectangle bounds = getButtonLocation(i);
+     if ((mouseX > bounds.x - epsilon && mouseX < bounds.x + bounds.width + epsilon) && 
+         (mouseY > bounds.y - epsilon && mouseY < bounds.y + bounds.height + epsilon))
+     {
+       mouseX = (bounds.x + bounds.x + bounds.width) / 2;
+       mouseY = (bounds.y + bounds.y + bounds.height) / 2;
+       
+     }     
+   }
 }
 
 void mouseDragged()
