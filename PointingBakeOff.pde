@@ -18,7 +18,7 @@ int hits = 0; //number of successful clicks
 int misses = 0; //number of missed clicks
 Robot robot; //initalized in setup 
 
-int numRepeats = 1; //sets the number of times each button repeats in the test
+int numRepeats = 3; //sets the number of times each button repeats in the test
 
 void setup()
 {
