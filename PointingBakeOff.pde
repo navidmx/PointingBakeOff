@@ -23,7 +23,7 @@ int numRepeats = 1; //sets the number of times each button repeats in the test
 void setup()
 {
   size(700, 700); // set the size of the window
-  //noCursor(); //hides the system cursor if you want
+  noCursor(); //hides the system cursor if you want
   noStroke(); //turn off all strokes, we're just using fills here (can change this if you want)
   textFont(createFont("Arial", 16)); //sets the font to Arial size 16
   textAlign(CENTER);
@@ -75,11 +75,13 @@ void draw()
   fill(255); //set fill color to white
   text((trialNum + 1) + " of " + trials.size(), 40, 20); //display what trial the user is on
 
-  for (int i = 0; i < 16; i++)// for all button
+  for (int i = 0; i < 16; i++) {
     drawButton(i); //draw button
+    drawFullButtonOnHover(i);
+  }
 
   fill(255, 0, 0, 200); // set fill color to translucent red
-  ellipse(mouseX, mouseY, 20, 20); //draw user cursor as a circle with a diameter of 20
+  ellipse(mouseX, mouseY, 20, 20); //draw user cursor as a circle with a diameter of 20  
 }
 
 void mousePressed() // test to see if hit was in target!
@@ -97,7 +99,8 @@ void mousePressed() // test to see if hit was in target!
     println("we're done!");
   }
 
-  Rectangle bounds = getButtonLocation(trials.get(trialNum));
+  // CHANGED to allow users to click in the padding area
+  Rectangle bounds = getButtonWithoutPadding(trials.get(trialNum));
 
  //check to see if mouse cursor is inside button 
   if ((mouseX > bounds.x && mouseX < bounds.x + bounds.width) && (mouseY > bounds.y && mouseY < bounds.y + bounds.height)) // test to see if hit was within bounds
@@ -110,12 +113,12 @@ void mousePressed() // test to see if hit was in target!
     System.out.println("MISSED! " + trialNum + " " + (millis() - startTime)); // fail
     misses++;
   }
-
+  
   trialNum++; //Increment trial number
 
   //in this example code, we move the mouse back to the middle
   //robot.mouseMove(width/2, (height)/2); //on click, move cursor to roughly center of window!
-}  
+}
 
 //probably shouldn't have to edit this method
 Rectangle getButtonLocation(int i) //for a given button ID, what is its location and size
@@ -123,6 +126,13 @@ Rectangle getButtonLocation(int i) //for a given button ID, what is its location
    int x = (i % 4) * (padding + buttonSize) + margin;
    int y = (i / 4) * (padding + buttonSize) + margin;
    return new Rectangle(x, y, buttonSize, buttonSize);
+}
+
+Rectangle getButtonWithoutPadding(int i)
+{
+   int x = (i % 4) * (padding + buttonSize) + margin - padding / 2;
+   int y = (i / 4) * (padding + buttonSize) + margin - padding / 2;
+   return new Rectangle(x, y, buttonSize + padding, buttonSize + padding);
 }
 
 //you can edit this method to change how buttons appear
@@ -138,10 +148,29 @@ void drawButton(int i)
   rect(bounds.x, bounds.y, bounds.width, bounds.height); //draw button
 }
 
+void drawFullButtonOnHover(int i) {
+  Rectangle bounds = getButtonWithoutPadding(i);
+  
+  if ((mouseX > bounds.x && mouseX < bounds.x + bounds.width) && (mouseY > bounds.y && mouseY < bounds.y + bounds.height)) // test to see if hit was within bounds
+  {
+    drawButtonWithoutPadding(i);
+  }
+}
+
+void drawButtonWithoutPadding(int i)
+{
+  Rectangle bounds = getButtonWithoutPadding(i);
+
+  if (trials.get(trialNum) == i) // see if current button is the target
+    fill(0, 255, 255); // if so, fill cyan
+  else
+    fill(200); // if not, fill gray
+
+  rect(bounds.x, bounds.y, bounds.width, bounds.height); //draw button
+}
+
 void mouseMoved()
 {
-   //can do stuff everytime the mouse is moved (i.e., not clicked)
-   //https://processing.org/reference/mouseMoved_.html
 }
 
 void mouseDragged()
