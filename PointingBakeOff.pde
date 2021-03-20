@@ -47,8 +47,10 @@ void setup()
 
   Collections.shuffle(trials); // randomize the order of the buttons
   System.out.println("trial order: " + trials);
-  
+
   frame.setLocation(0,0); // put window in top left corner of screen (doesn't always work)
+  
+  noCursor();
 }
 
 
