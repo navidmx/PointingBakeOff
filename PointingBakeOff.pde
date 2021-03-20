@@ -17,6 +17,8 @@ int finishTime = 0; //records the time of the final click
 int hits = 0; //number of successful clicks
 int misses = 0; //number of missed clicks
 Robot robot; //initalized in setup 
+int delay = 250; //how long (ms) to flash the new target color 
+int targetStartTime; //track when each new target appears
 
 int numRepeats = 1; //sets the number of times each button repeats in the test
 
@@ -30,6 +32,8 @@ void setup()
   frameRate(60);
   ellipseMode(CENTER); //ellipses are drawn from the center (BUT RECTANGLES ARE NOT!)
   //rectMode(CENTER); //enabling will break the scaffold code, but you might find it easier to work with centered rects
+  
+  targetStartTime = millis();
 
   try {
     robot = new Robot(); //create a "Java Robot" class that can move the system cursor
@@ -112,6 +116,8 @@ void mousePressed() // test to see if hit was in target!
   }
 
   trialNum++; //Increment trial number
+  
+  targetStartTime = millis();
 
   //in this example code, we move the mouse back to the middle
   //robot.mouseMove(width/2, (height)/2); //on click, move cursor to roughly center of window!
@@ -130,8 +136,12 @@ void drawButton(int i)
 {
   Rectangle bounds = getButtonLocation(i);
 
-  if (trials.get(trialNum) == i) // see if current button is the target
-    fill(0, 255, 255); // if so, fill cyan
+  if (trials.get(trialNum) == i) { // see if current button is the target 
+    if (millis() - targetStartTime < delay) 
+      fill(0, 0, 255);
+    else
+      fill(0, 255, 255); // if so, fill cyan
+  }
   else
     fill(200); // if not, fill gray
 
