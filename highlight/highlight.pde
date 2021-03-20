@@ -8,28 +8,38 @@ import processing.core.PApplet;
 //when in doubt, consult the Processsing reference: https://processing.org/reference/
 
 int margin = 200; //set the margin around the squares
-final int padding = 50; // padding between buttons and also their width/height
-final int buttonSize = 40; // padding between buttons and also their width/height
+final int padding = 50; // padding between buttons
+final int buttonSize = 40; // width/height of buttons
 ArrayList<Integer> trials = new ArrayList<Integer>(); //contains the order of buttons that activate in the test
 int trialNum = 0; //the current trial number (indexes into trials array above)
 int startTime = 0; // time starts when the first click is captured
 int finishTime = 0; //records the time of the final click
 int hits = 0; //number of successful clicks
 int misses = 0; //number of missed clicks
-Robot robot; //initalized in setup 
+Robot robot; //initalized in setup
+
+Rectangle rec1 = getButtonLocation(0);
+Rectangle rec2 = getButtonLocation(4);
+Rectangle rec3 = getButtonLocation(8);
+
+int row1 = rec1.y + buttonSize + (padding/2);
+int row2 = rec2.y + buttonSize + (padding/2);
+int row3 = rec3.y + buttonSize + (padding/2);
+
+int col1 = rec1.x + buttonSize + (padding/2);
+int col2 = rec1.x + 2*buttonSize + (3*padding/2);
+int col3 = rec1.x + 3*buttonSize + (5*padding/2);
 
 int numRepeats = 1; //sets the number of times each button repeats in the test
 
 void setup()
 {
   size(700, 700); // set the size of the window
-  //noCursor(); //hides the system cursor if you want
   noStroke(); //turn off all strokes, we're just using fills here (can change this if you want)
   textFont(createFont("Arial", 16)); //sets the font to Arial size 16
   textAlign(CENTER);
   frameRate(60);
   ellipseMode(CENTER); //ellipses are drawn from the center (BUT RECTANGLES ARE NOT!)
-  //rectMode(CENTER); //enabling will break the scaffold code, but you might find it easier to work with centered rects
 
   try {
     robot = new Robot(); //create a "Java Robot" class that can move the system cursor
@@ -78,44 +88,24 @@ void draw()
   for (int i = 0; i < 16; i++)// for all button
     drawButton(i); //draw button
 
-  fill(255, 0, 0, 200); // set fill color to translucent red
-  rect(mouseX-5, mouseY-5, 10, 10); //draw user cursor as a circle with a diameter of 20
+
+  if (mouseY <= row1) changeBackground(0, 0, width, row1);
+  else if (mouseY > row1 && mouseY <= row2) changeBackground(0, row1, width, row2 - row1);
+  else if (mouseY > row2 && mouseY <= row3) changeBackground(0, row2, width, row3 - row2);
+  else changeBackground(0, row3, width, height - row3);
+  
+  if (mouseX <= col1) changeBackground(0, 0, col1, height);
+  else if (mouseX > col1 && mouseX <= col2) changeBackground(col1, 0, col2-col1, height);
+  else if (mouseX > col2 && mouseX <= col3) changeBackground(col2, 0, col3-col2, height);
+  else changeBackground(col3, 0, width-col3, height);
+
+  cursor(CROSS);
 }
 
-void mousePressed() // test to see if hit was in target!
-{
-  if (trialNum >= trials.size()) //if task is over, just return
-    return;
-
-  if (trialNum == 0) //check if first click, if so, start timer
-    startTime = millis();
-
-  if (trialNum == trials.size() - 1) //check if final click
-  {
-    finishTime = millis();
-    //write to terminal some output. Useful for debugging too.
-    println("we're done!");
-  }
-
-  Rectangle bounds = getButtonLocation(trials.get(trialNum));
-
- //check to see if mouse cursor is inside button 
-  if ((mouseX > bounds.x && mouseX < bounds.x + bounds.width) && (mouseY > bounds.y && mouseY < bounds.y + bounds.height)) // test to see if hit was within bounds
-  {
-    System.out.println("HIT! " + trialNum + " " + (millis() - startTime)); // success
-    hits++; 
-  } 
-  else
-  {
-    System.out.println("MISSED! " + trialNum + " " + (millis() - startTime)); // fail
-    misses++;
-  }
-
-  trialNum++; //Increment trial number
-
-  //in this example code, we move the mouse back to the middle
-  //robot.mouseMove(width/2, (height)/2); //on click, move cursor to roughly center of window!
-}  
+void changeBackground(int x, int y, int w, int h) {
+  fill(211, 211, 211, 75);
+  rect(x, y, w, h);
+}
 
 //probably shouldn't have to edit this method
 Rectangle getButtonLocation(int i) //for a given button ID, what is its location and size
@@ -138,21 +128,67 @@ void drawButton(int i)
   rect(bounds.x, bounds.y, bounds.width, bounds.height); //draw button
 }
 
-void mouseMoved()
-{
-   //can do stuff everytime the mouse is moved (i.e., not clicked)
-   //https://processing.org/reference/mouseMoved_.html
+void mousePressed() {
+  if (trialNum >= trials.size()) return;
+
+  if (trialNum == 0) startTime = millis();
+
+  if (trialNum == trials.size() - 1) {
+    finishTime = millis();
+    println("we're done!");
+  }
+  
+  checkAll();
+
+  trialNum++;
 }
 
-void mouseDragged()
-{
-  //can do stuff everytime the mouse is dragged
-  //https://processing.org/reference/mouseDragged_.html
+void checkAll() {
+  int squareNum = trials.get(trialNum);
+  
+  if (squareNum == 0) verify(0, col1, 0, row1);
+  else if (squareNum == 1) verify(col1, col2, 0, row1);
+  else if (squareNum == 2) verify(col2, col3, 0, row1);
+  else if (squareNum == 3) verify(col3, width, 0, row1);
+  else if (squareNum == 4) verify(0, col1, row1, row2);
+  else if (squareNum == 5) verify(col1, col2, row1, row2);
+  else if (squareNum == 6) verify(col2, col3, row1, row2);
+  else if (squareNum == 7) verify(col3, width, row1, row2);
+  else if (squareNum == 8) verify(0, col1, row2, row3);
+  else if (squareNum == 9) verify(col1, col2, row2, row3);
+  else if (squareNum == 10) verify(col2, col3, row2, row3);
+  else if (squareNum == 11) verify(col3, width, row2, row3);
+  else if (squareNum == 12) verify(0, col1, row3, height);
+  else if (squareNum == 13) verify(col1, col2, row3, height);
+  else if (squareNum == 14) verify(col2, col3, row3, height);
+  else verify(col3, width, row3, height);
+}
+
+void verify(int lowerX, int upperX, int lowerY, int upperY) {
+  if ((mouseX >= lowerX) && (mouseX <= upperX) && (mouseY >= lowerY) && (mouseY <= upperY)) hit();
+  else miss();
+}
+
+void hit() {
+  System.out.println("HIT! " + trialNum + " " + (millis() - startTime)); // success
+  hits++;
+}
+
+void miss() {
+  System.out.println("MISSED! " + trialNum + " " + (millis() - startTime)); // fail
+  misses++;
 }
 
 void keyPressed() 
 {
-  //can use the keyboard if you wish
-  //https://processing.org/reference/keyTyped_.html
-  //https://processing.org/reference/keyCode.html
+  if (trialNum >= trials.size()) return;
+  if (trialNum == 0) startTime = millis();
+  if (trialNum == trials.size() - 1) {
+    finishTime = millis();
+    println("we're done!");
+  }
+  
+  if (key == ' ') checkAll();
+
+  trialNum++;
 }

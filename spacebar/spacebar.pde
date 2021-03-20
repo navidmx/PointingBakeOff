@@ -29,7 +29,6 @@ void setup()
   textAlign(CENTER);
   frameRate(60);
   ellipseMode(CENTER); //ellipses are drawn from the center (BUT RECTANGLES ARE NOT!)
-  //rectMode(CENTER); //enabling will break the scaffold code, but you might find it easier to work with centered rects
 
   try {
     robot = new Robot(); //create a "Java Robot" class that can move the system cursor
@@ -112,9 +111,6 @@ void mousePressed() // test to see if hit was in target!
   }
 
   trialNum++; //Increment trial number
-
-  //in this example code, we move the mouse back to the middle
-  //robot.mouseMove(width/2, (height)/2); //on click, move cursor to roughly center of window!
 }  
 
 //probably shouldn't have to edit this method
@@ -138,24 +134,7 @@ void drawButton(int i)
   rect(bounds.x, bounds.y, bounds.width, bounds.height); //draw button
 }
 
-void mouseMoved()
-{
-   //can do stuff everytime the mouse is moved (i.e., not clicked)
-   //https://processing.org/reference/mouseMoved_.html
-}
-
-void mouseDragged()
-{
-  //can do stuff everytime the mouse is dragged
-  //https://processing.org/reference/mouseDragged_.html
-}
-
-void keyPressed() 
-{
-  //can use the keyboard if you wish
-  //https://processing.org/reference/keyTyped_.html
-  //https://processing.org/reference/keyCode.html
-
+void keyPressed() {
   if (trialNum >= trials.size()) //if task is over, just return
     return;
 
