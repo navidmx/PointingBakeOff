@@ -23,7 +23,7 @@ int numRepeats = 1; //sets the number of times each button repeats in the test
 void setup()
 {
   size(700, 700); // set the size of the window
-  //noCursor(); //hides the system cursor if you want
+  noCursor(); //hides the system cursor if you want
   noStroke(); //turn off all strokes, we're just using fills here (can change this if you want)
   textFont(createFont("Arial", 16)); //sets the font to Arial size 16
   textAlign(CENTER);
@@ -49,8 +49,6 @@ void setup()
   System.out.println("trial order: " + trials);
 
   frame.setLocation(0,0); // put window in top left corner of screen (doesn't always work)
-  
-  noCursor();
 }
 
 
