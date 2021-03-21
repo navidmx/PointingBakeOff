@@ -81,9 +81,7 @@ void draw()
   }
 
   drawPath(trials.get(trialNum));
-
-  fill(255, 0, 0, 200); // set fill color to translucent red
-  ellipse(mouseX, mouseY, 20, 20); //draw user cursor as a circle with a diameter of 20
+  cursor(CROSS);
 }
 
 void drawPath(int i) {
