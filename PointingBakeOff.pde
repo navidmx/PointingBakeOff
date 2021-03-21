@@ -80,7 +80,11 @@ void draw()
     drawFullButtonOnHover(i);
   }
 
-  drawPath(trials.get(trialNum));
+  int trial = trials.get(trialNum);
+  
+  drawPath(trial);
+  if (trialNum + 1 < trials.size())
+    drawUpcomingPath(trial, trials.get(trialNum + 1));
 
   fill(255, 0, 0, 200); // set fill color to translucent red
   ellipse(mouseX, mouseY, 20, 20); //draw user cursor as a circle with a diameter of 20
@@ -98,6 +102,25 @@ void drawPath(int i) {
   fill(255, 0, 0);
   strokeWeight(2);
   ellipse(x, y, 8, 8);
+  noStroke();
+}
+
+void drawUpcomingPath(int curr, int next) {
+  
+  Rectangle currBounds = getButtonLocation(curr);
+  int currX = currBounds.x + (currBounds.width / 2);
+  int currY = currBounds.y + (currBounds.height / 2);
+  
+  Rectangle nextBounds = getButtonLocation(next);
+  int nextX = nextBounds.x + (nextBounds.width / 2);
+  int nextY = nextBounds.y + (nextBounds.height / 2);
+
+  stroke(90, 90, 90, 125);
+  strokeWeight(3);
+  line(currX, currY, nextX, nextY);
+  fill(0, 255, 255, 80);
+  strokeWeight(2);
+  ellipse(nextX, nextY, 6, 6);
   noStroke();
 }
 
