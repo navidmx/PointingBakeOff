@@ -16,7 +16,6 @@ int startTime = 0; // time starts when the first click is captured
 int finishTime = 0; //records the time of the final click
 int hits = 0; //number of successful clicks
 int misses = 0; //number of missed clicks
-Robot robot; //initalized in setup
 
 Rectangle rec1 = getButtonLocation(0);
 Rectangle rec2 = getButtonLocation(4);
@@ -30,6 +29,10 @@ int col1 = rec1.x + buttonSize + (padding/2);
 int col2 = rec1.x + 2*buttonSize + (3*padding/2);
 int col3 = rec1.x + 3*buttonSize + (5*padding/2);
 
+Robot robot; //initalized in setup 
+int delay = 100; //how long (ms) to flash the new target color 
+int targetStartTime; //track when each new target appears
+
 int numRepeats = 3; //sets the number of times each button repeats in the test
 
 void setup()
@@ -40,6 +43,8 @@ void setup()
   textAlign(CENTER);
   frameRate(60);
   ellipseMode(CENTER); //ellipses are drawn from the center (BUT RECTANGLES ARE NOT!)
+  
+  targetStartTime = millis();
 
   try {
     robot = new Robot(); //create a "Java Robot" class that can move the system cursor
@@ -140,13 +145,37 @@ void drawPath(int i) {
   noStroke();
 }
 
+void mousePressed()
+{
+  if (trialNum >= trials.size()) return;
+
+  if (trialNum == 0) startTime = millis();
+
+  if (trialNum == trials.size() - 1) {
+    finishTime = millis();
+    println("we're done!");
+  }
+  
+  checkAll();
+
+  trialNum++; //Increment trial number
+  
+  targetStartTime = millis();
+
+  //in this example code, we move the mouse back to the middle
+  //robot.mouseMove(width/2, (height)/2); //on click, move cursor to roughly center of window!
+}
+
 //you can edit this method to change how buttons appear
 void drawButton(int i)
 {
   Rectangle bounds = getButtonLocation(i);
 
   if (trials.get(trialNum) == i) // see if current button is the target
-    fill(0, 255, 255); // if so, fill cyan
+    if (millis() - targetStartTime < delay) 
+      fill(255, 165, 0);
+    else
+      fill(0, 255, 255); // if so, fill cyan
   else if (trialNum + 1 < trials.size() && trials.get(trialNum + 1) == i)
     fill(0, 255, 255, 80);
   else
@@ -168,27 +197,16 @@ void drawButtonWithoutPadding(int i)
 {
   Rectangle bounds = getButtonWithoutPadding(i);
 
-  if (trials.get(trialNum) == i) // see if current button is the target
-    fill(0, 255, 255); // if so, fill cyan
+  if (trials.get(trialNum) == i) { // see if current button is the target 
+    if (millis() - targetStartTime < delay) 
+      fill(255, 165, 0);
+    else
+      fill(0, 255, 255); // if so, fill cyan
+  }
   else
     fill(200); // if not, fill gray
 
   rect(bounds.x, bounds.y, bounds.width, bounds.height); //draw button
-}
-
-void mousePressed() {
-  if (trialNum >= trials.size()) return;
-
-  if (trialNum == 0) startTime = millis();
-
-  if (trialNum == trials.size() - 1) {
-    finishTime = millis();
-    println("we're done!");
-  }
-  
-  checkAll();
-
-  trialNum++;
 }
 
 void checkAll() {
@@ -229,14 +247,15 @@ void miss() {
 
 void keyPressed() 
 {
-  if (trialNum >= trials.size()) return;
-  if (trialNum == 0) startTime = millis();
-  if (trialNum == trials.size() - 1) {
-    finishTime = millis();
-    println("we're done!");
+  if (key == ' ') {
+    if (trialNum >= trials.size()) return;
+    if (trialNum == 0) startTime = millis();
+    if (trialNum == trials.size() - 1) {
+      finishTime = millis();
+      println("we're done!");
+    }
+    checkAll();
+    trialNum++;
+    targetStartTime = millis();
   }
-  
-  if (key == ' ') checkAll();
-
-  trialNum++;
 }
