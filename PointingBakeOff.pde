@@ -164,7 +164,7 @@ void drawButton(int i)
 
   if (trials.get(trialNum) == i) { // see if current button is the target 
     if (millis() - targetStartTime < delay) 
-      fill(0, 0, 255);
+      fill(255, 165, 0);
     else
       fill(0, 255, 255); // if so, fill cyan
   }
@@ -189,7 +189,7 @@ void drawButtonWithoutPadding(int i)
 
   if (trials.get(trialNum) == i) { // see if current button is the target 
     if (millis() - targetStartTime < delay) 
-      fill(0, 0, 255);
+      fill(255, 165, 0);
     else
       fill(0, 255, 255); // if so, fill cyan
   }
