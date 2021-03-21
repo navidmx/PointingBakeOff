@@ -79,9 +79,26 @@ void draw()
     drawButton(i); //draw button
     drawFullButtonOnHover(i);
   }
+  
+  drawPath(trials.get(trialNum));
 
   fill(255, 0, 0, 200); // set fill color to translucent red
-  ellipse(mouseX, mouseY, 20, 20); //draw user cursor as a circle with a diameter of 20  
+  ellipse(mouseX, mouseY, 20, 20); //draw user cursor as a circle with a diameter of 20
+}
+
+void drawPath(int i) {
+  Rectangle bounds = getButtonLocation(i);
+  
+  int x = bounds.x + (bounds.width / 2);
+  int y = bounds.y + (bounds.height / 2);
+  
+  stroke(255);
+  strokeWeight(4);
+  line(mouseX, mouseY, x, y);
+  fill(255, 0, 0);
+  strokeWeight(2);
+  ellipse(x, y, 8, 8);
+  noStroke();
 }
 
 void mousePressed() // test to see if hit was in target!
