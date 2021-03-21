@@ -187,8 +187,12 @@ void drawButtonWithoutPadding(int i)
 {
   Rectangle bounds = getButtonWithoutPadding(i);
 
-  if (trials.get(trialNum) == i) // see if current button is the target
-    fill(0, 255, 255); // if so, fill cyan
+  if (trials.get(trialNum) == i) { // see if current button is the target 
+    if (millis() - targetStartTime < delay) 
+      fill(0, 0, 255);
+    else
+      fill(0, 255, 255); // if so, fill cyan
+  }
   else
     fill(200); // if not, fill gray
 
