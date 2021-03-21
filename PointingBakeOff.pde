@@ -40,15 +40,15 @@ void setup()
 
   //===DON'T MODIFY MY RANDOM ORDERING CODE==
   for (int i = 0; i < 16; i++) //generate list of targets and randomize the order
-      // number of buttons in 4x4 grid
+    // number of buttons in 4x4 grid
     for (int k = 0; k < numRepeats; k++)
       // number of times each button repeats
       trials.add(i);
 
   Collections.shuffle(trials); // randomize the order of the buttons
   System.out.println("trial order: " + trials);
-  
-  frame.setLocation(0,0); // put window in top left corner of screen (doesn't always work)
+
+  frame.setLocation(0, 0); // put window in top left corner of screen (doesn't always work)
 }
 
 
@@ -59,7 +59,7 @@ void draw()
   if (trialNum >= trials.size()) //check to see if test is over
   {
     float timeTaken = (finishTime-startTime) / 1000f;
-    float penalty = constrain(((95f-((float)hits*100f/(float)(hits+misses)))*.2f),0,100);
+    float penalty = constrain(((95f-((float)hits*100f/(float)(hits+misses)))*.2f), 0, 100);
     fill(255); //set fill color to white
     //write to screen (not console)
     text("Finished!", width / 2, height / 2); 
@@ -67,8 +67,8 @@ void draw()
     text("Misses: " + misses, width / 2, height / 2 + 40);
     text("Accuracy: " + (float)hits*100f/(float)(hits+misses) +"%", width / 2, height / 2 + 60);
     text("Total time taken: " + timeTaken + " sec", width / 2, height / 2 + 80);
-    text("Average time for each button: " + nf((timeTaken)/(float)(hits+misses),0,3) + " sec", width / 2, height / 2 + 100);
-    text("Average time for each button + penalty: " + nf(((timeTaken)/(float)(hits+misses) + penalty),0,3) + " sec", width / 2, height / 2 + 140);
+    text("Average time for each button: " + nf((timeTaken)/(float)(hits+misses), 0, 3) + " sec", width / 2, height / 2 + 100);
+    text("Average time for each button + penalty: " + nf(((timeTaken)/(float)(hits+misses) + penalty), 0, 3) + " sec", width / 2, height / 2 + 140);
     return; //return, nothing else to do now test is over
   }
 
@@ -79,7 +79,7 @@ void draw()
     drawButton(i); //draw button
     drawFullButtonOnHover(i);
   }
-  
+
   drawPath(trials.get(trialNum));
 
   fill(255, 0, 0, 200); // set fill color to translucent red
@@ -88,10 +88,10 @@ void draw()
 
 void drawPath(int i) {
   Rectangle bounds = getButtonLocation(i);
-  
+
   int x = bounds.x + (bounds.width / 2);
   int y = bounds.y + (bounds.height / 2);
-  
+
   stroke(255);
   strokeWeight(4);
   line(mouseX, mouseY, x, y);
@@ -119,18 +119,17 @@ void mousePressed() // test to see if hit was in target!
   // CHANGED to allow users to click in the padding area
   Rectangle bounds = getButtonWithoutPadding(trials.get(trialNum));
 
- //check to see if mouse cursor is inside button 
+  //check to see if mouse cursor is inside button 
   if ((mouseX > bounds.x && mouseX < bounds.x + bounds.width) && (mouseY > bounds.y && mouseY < bounds.y + bounds.height)) // test to see if hit was within bounds
   {
     System.out.println("HIT! " + trialNum + " " + (millis() - startTime)); // success
-    hits++; 
-  } 
-  else
+    hits++;
+  } else
   {
     System.out.println("MISSED! " + trialNum + " " + (millis() - startTime)); // fail
     misses++;
   }
-  
+
   trialNum++; //Increment trial number
 
   //in this example code, we move the mouse back to the middle
@@ -140,16 +139,16 @@ void mousePressed() // test to see if hit was in target!
 //probably shouldn't have to edit this method
 Rectangle getButtonLocation(int i) //for a given button ID, what is its location and size
 {
-   int x = (i % 4) * (padding + buttonSize) + margin;
-   int y = (i / 4) * (padding + buttonSize) + margin;
-   return new Rectangle(x, y, buttonSize, buttonSize);
+  int x = (i % 4) * (padding + buttonSize) + margin;
+  int y = (i / 4) * (padding + buttonSize) + margin;
+  return new Rectangle(x, y, buttonSize, buttonSize);
 }
 
 Rectangle getButtonWithoutPadding(int i)
 {
-   int x = (i % 4) * (padding + buttonSize) + margin - padding / 2;
-   int y = (i / 4) * (padding + buttonSize) + margin - padding / 2;
-   return new Rectangle(x, y, buttonSize + padding, buttonSize + padding);
+  int x = (i % 4) * (padding + buttonSize) + margin - padding / 2;
+  int y = (i / 4) * (padding + buttonSize) + margin - padding / 2;
+  return new Rectangle(x, y, buttonSize + padding, buttonSize + padding);
 }
 
 //you can edit this method to change how buttons appear
@@ -167,7 +166,7 @@ void drawButton(int i)
 
 void drawFullButtonOnHover(int i) {
   Rectangle bounds = getButtonWithoutPadding(i);
-  
+
   if ((mouseX > bounds.x && mouseX < bounds.x + bounds.width) && (mouseY > bounds.y && mouseY < bounds.y + bounds.height)) // test to see if hit was within bounds
   {
     drawButtonWithoutPadding(i);
@@ -198,7 +197,31 @@ void mouseDragged()
 
 void keyPressed() 
 {
-  //can use the keyboard if you wish
-  //https://processing.org/reference/keyTyped_.html
-  //https://processing.org/reference/keyCode.html
+  if (trialNum >= trials.size()) //if task is over, just return
+    return;
+
+  if (trialNum == 0) //check if first click, if so, start timer
+    startTime = millis();
+
+  if (trialNum == trials.size() - 1) //check if final click
+  {
+    finishTime = millis();
+    //write to terminal some output. Useful for debugging too.
+    println("we're done!");
+  }
+
+  Rectangle bounds = getButtonWithoutPadding(trials.get(trialNum));
+
+  //check to see if mouse cursor is inside button 
+  if ((key == ' ') && (mouseX > bounds.x && mouseX < bounds.x + bounds.width) && (mouseY > bounds.y && mouseY < bounds.y + bounds.height)) // test to see if hit was within bounds
+  {
+    System.out.println("HIT! " + trialNum + " " + (millis() - startTime)); // success
+    hits++;
+  } else
+  {
+    System.out.println("MISSED! " + trialNum + " " + (millis() - startTime)); // fail
+    misses++;
+  }
+
+  trialNum++; //Increment trial number
 }
