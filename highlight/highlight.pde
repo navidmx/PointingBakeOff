@@ -30,7 +30,7 @@ int col1 = rec1.x + buttonSize + (padding/2);
 int col2 = rec1.x + 2*buttonSize + (3*padding/2);
 int col3 = rec1.x + 3*buttonSize + (5*padding/2);
 
-int numRepeats = 1; //sets the number of times each button repeats in the test
+int numRepeats = 3; //sets the number of times each button repeats in the test
 
 void setup()
 {
@@ -85,10 +85,6 @@ void draw()
   fill(255); //set fill color to white
   text((trialNum + 1) + " of " + trials.size(), 40, 20); //display what trial the user is on
 
-  for (int i = 0; i < 16; i++)// for all button
-    drawButton(i); //draw button
-
-
   if (mouseY <= row1) changeBackground(0, 0, width, row1);
   else if (mouseY > row1 && mouseY <= row2) changeBackground(0, row1, width, row2 - row1);
   else if (mouseY > row2 && mouseY <= row3) changeBackground(0, row2, width, row3 - row2);
@@ -99,11 +95,18 @@ void draw()
   else if (mouseX > col2 && mouseX <= col3) changeBackground(col2, 0, col3-col2, height);
   else changeBackground(col3, 0, width-col3, height);
 
+  for (int i = 0; i < 16; i++) {
+    drawButton(i); //draw button
+    drawFullButtonOnHover(i);
+  }
+  
+  drawPath(trials.get(trialNum));
+
   cursor(CROSS);
 }
 
 void changeBackground(int x, int y, int w, int h) {
-  fill(211, 211, 211, 75);
+  fill(150, 150, 150, 50);
   rect(x, y, w, h);
 }
 
@@ -115,10 +118,53 @@ Rectangle getButtonLocation(int i) //for a given button ID, what is its location
    return new Rectangle(x, y, buttonSize, buttonSize);
 }
 
+Rectangle getButtonWithoutPadding(int i)
+{
+  int x = (i % 4) * (padding + buttonSize) + margin - padding / 2;
+  int y = (i / 4) * (padding + buttonSize) + margin - padding / 2;
+  return new Rectangle(x, y, buttonSize + padding, buttonSize + padding);
+}
+
+void drawPath(int i) {
+  Rectangle bounds = getButtonLocation(i);
+
+  int x = bounds.x + (bounds.width / 2);
+  int y = bounds.y + (bounds.height / 2);
+
+  stroke(255);
+  strokeWeight(4);
+  line(mouseX, mouseY, x, y);
+  fill(255, 0, 0);
+  strokeWeight(2);
+  ellipse(x, y, 8, 8);
+  noStroke();
+}
+
 //you can edit this method to change how buttons appear
 void drawButton(int i)
 {
   Rectangle bounds = getButtonLocation(i);
+
+  if (trials.get(trialNum) == i) // see if current button is the target
+    fill(0, 255, 255); // if so, fill cyan
+  else
+    fill(200); // if not, fill gray
+
+  rect(bounds.x, bounds.y, bounds.width, bounds.height); //draw button
+}
+
+void drawFullButtonOnHover(int i) {
+  Rectangle bounds = getButtonWithoutPadding(i);
+
+  if ((mouseX > bounds.x && mouseX < bounds.x + bounds.width) && (mouseY > bounds.y && mouseY < bounds.y + bounds.height)) // test to see if hit was within bounds
+  {
+    drawButtonWithoutPadding(i);
+  }
+}
+
+void drawButtonWithoutPadding(int i)
+{
+  Rectangle bounds = getButtonWithoutPadding(i);
 
   if (trials.get(trialNum) == i) // see if current button is the target
     fill(0, 255, 255); // if so, fill cyan
