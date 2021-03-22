@@ -171,17 +171,23 @@ void drawButton(int i)
 {
   Rectangle bounds = getButtonLocation(i);
 
-  if (trials.get(trialNum) == i) // see if current button is the target
+  if (trials.get(trialNum) == i) {
     if (millis() - targetStartTime < delay) 
       fill(255, 165, 0);
     else
-      fill(0, 255, 255); // if so, fill cyan
-  else if (trialNum + 1 < trials.size() && trials.get(trialNum + 1) == i)
-    fill(0, 255, 255, 80);
-  else
+      fill(0, 255, 255);
+    rect(bounds.x, bounds.y, bounds.width, bounds.height);
+  }
+  else if (trialNum + 1 < trials.size() && trials.get(trialNum + 1) == i) {
+    fill(200);
+    rect(bounds.x, bounds.y, bounds.width, bounds.height);
+    fill(0, 125, 125);
+    circle(bounds.x + (bounds.width / 2), bounds.y + (bounds.height / 2), 10);
+  }
+  else {
     fill(200); // if not, fill gray
-
-  rect(bounds.x, bounds.y, bounds.width, bounds.height); //draw button
+    rect(bounds.x, bounds.y, bounds.width, bounds.height);
+  }
 }
 
 void drawFullButtonOnHover(int i) {
