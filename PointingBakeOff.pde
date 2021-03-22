@@ -111,7 +111,7 @@ void draw()
 }
 
 void changeBackground(int x, int y, int w, int h) {
-  fill(150, 150, 150, 50);
+  fill(150, 150, 150, 30);
   rect(x, y, w, h);
 }
 
