@@ -181,7 +181,7 @@ void drawButton(int i)
   else if (trialNum + 1 < trials.size() && trials.get(trialNum + 1) == i) {
     fill(200);
     rect(bounds.x, bounds.y, bounds.width, bounds.height);
-    fill(0, 125, 125);
+    fill(0, 125, 125, 140);
     circle(bounds.x + (bounds.width / 2), bounds.y + (bounds.height / 2), 10);
   }
   else {
