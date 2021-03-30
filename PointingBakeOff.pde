@@ -16,6 +16,11 @@ int startTime = 0; // time starts when the first click is captured
 int finishTime = 0; //records the time of the final click
 int hits = 0; //number of successful clicks
 int misses = 0; //number of missed clicks
+int participantId = int(random(100)); 
+int trialStartX = -1; //X position of the cursor at beginning of trial (in pixels)
+int trialStartY = -1; //Y position of the cursor at beginning of trial (in pixels)
+int trialCenterX; //X position of the center of the target (in pixels)
+int trialCenterY; //Y position of the center of the target (in pixels)
 
 Rectangle rec1 = getButtonLocation(0);
 Rectangle rec2 = getButtonLocation(4);
@@ -61,7 +66,7 @@ void setup()
       trials.add(i);
 
   Collections.shuffle(trials); // randomize the order of the buttons
-  System.out.println("trial order: " + trials);
+  //System.out.println("trial order: " + trials);
   
   frame.setLocation(0,0); // put window in top left corner of screen (doesn't always work)
 }
@@ -85,6 +90,11 @@ void draw()
     text("Average time for each button: " + nf((timeTaken)/(float)(hits+misses),0,3) + " sec", width / 2, height / 2 + 100);
     text("Average time for each button + penalty: " + nf(((timeTaken)/(float)(hits+misses) + penalty),0,3) + " sec", width / 2, height / 2 + 140);
     return; //return, nothing else to do now test is over
+  }
+  
+  if (trialStartX < 0) {
+    trialStartX = mouseX;
+    trialStartY = mouseY; 
   }
 
   fill(255); //set fill color to white
@@ -153,7 +163,7 @@ void mousePressed()
 
   if (trialNum == trials.size() - 1) {
     finishTime = millis();
-    println("we're done!");
+    //println("we're done!");
   }
   
   checkAll();
@@ -237,18 +247,29 @@ void checkAll() {
 }
 
 void verify(int lowerX, int upperX, int lowerY, int upperY) {
+  Rectangle bounds = getButtonLocation(trials.get(trialNum));
+  trialCenterX = bounds.x + (bounds.width / 2);
+  trialCenterY = bounds.y + (bounds.height / 2);
   if ((mouseX >= lowerX) && (mouseX <= upperX) && (mouseY >= lowerY) && (mouseY <= upperY)) hit();
   else miss();
 }
 
 void hit() {
-  System.out.println("HIT! " + trialNum + " " + (millis() - startTime)); // success
+  //System.out.println("HIT! " + trialNum + " " + (millis() - startTime)); // success
+  String timeStr = nf((millis() - targetStartTime) / 1000f, 0, 3);
+  System.out.println(trialNum + "," + participantId + "," + trialStartX + "," + trialStartY + "," + trialCenterX + "," + trialCenterY + ",40," + timeStr + ",1");
   hits++;
+  trialStartX = mouseX;
+  trialStartY = mouseY;
 }
 
 void miss() {
-  System.out.println("MISSED! " + trialNum + " " + (millis() - startTime)); // fail
+  //System.out.println("MISSED! " + trialNum + " " + (millis() - startTime)); // fail
+  String timeStr = nf((millis() - targetStartTime) / 1000f, 0, 3);
+  System.out.println(trialNum + "," + participantId + "," + trialStartX + "," + trialStartY + "," + trialCenterX + "," + trialCenterY + ",40," + timeStr + ",0");
   misses++;
+  trialStartX = mouseX;
+  trialStartY = mouseY;
 }
 
 void keyPressed() 
